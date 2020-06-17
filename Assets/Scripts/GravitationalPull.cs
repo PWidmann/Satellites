@@ -6,7 +6,6 @@ public class GravitationalPull : MonoBehaviour
 {
     public GameObject gravityCenterObject;
     public Vector3 startingSpeed;
-    public float gravityCenterMass;
     public float gravitationalConstant;
 
     Vector3 movement;
@@ -24,7 +23,7 @@ public class GravitationalPull : MonoBehaviour
 
         //Gravitational Pull (Beschleunigung zum Gravitationscenter)
         float distance = (gravityCenterObject.transform.position - transform.position).magnitude;
-        float acceleration = (gravitationalConstant * gravityCenterMass) / (distance * distance);
+        float acceleration = (gravitationalConstant * GameManager.EarthMass) / (distance * distance);
         movement += acceleration * direction * Time.fixedDeltaTime;
 
         //Position anpassen

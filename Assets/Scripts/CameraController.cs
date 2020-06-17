@@ -19,7 +19,7 @@ public class CameraController : MonoBehaviour
     private float cameraSmoothing = 0.05f;
 
     //Camera Rotation
-    private float rotationSmoothTime = 0.5f;
+    private float rotationSmoothTime = 0.1f;
     Vector2 pitchMinMax = new Vector2(-89, 89);
     Vector3 rotationSmoothVelocity;
     Vector3 currentRotation;

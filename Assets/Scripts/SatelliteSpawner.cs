@@ -4,38 +4,87 @@ using UnityEngine;
 
 public class SatelliteSpawner : MonoBehaviour
 {
-    public GameObject spawnObject;
-    Transform spawnMesh;
-
+    [SerializeField] GameObject spawnObject;
+    [SerializeField] GameObject arrowObject;
+    Transform satelliteMesh;
     public float satelliteHeightMultiplier = 2;
-    private Vector3 gravityCenter = new Vector3(0, 0, 0);
+    
+    private Vector3 gravityCenter = Vector3.zero;
+    RaycastHit hit;
+    Vector3 spawnPosition;
+    Vector3 startingDirection;
+
+    bool isSatellitePlaced = false;
+    bool isSetStartingDirection = false;
+    bool arrowActive = false;
+    float pointerAngle;
+    Vector3 pointerRotationAxis;
+    Transform directionPoint;
+    Vector3 arrowDirection;
+
+    GameObject satellite;
+    GameObject arrow;
 
     void Start()
-    {
-        spawnMesh = spawnObject.transform.GetChild(0);
+    {     
+        arrow = Instantiate(arrowObject, new Vector3(0, 0, 0), Quaternion.identity);
+        arrow.SetActive(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        // First left mouse button to place satellite in orbit
+        if (Input.GetMouseButtonDown(0) && isSatellitePlaced == false)
         {
-            RaycastHit hit;
+            
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
             if (Physics.Raycast(ray, out hit, 10000.0f))
             {
                 if (hit.transform.name == "Earth")
                 {
-                    GameObject satellite = Instantiate(spawnObject, hit.point, Quaternion.identity);
+                    spawnPosition = (hit.point - gravityCenter) * satelliteHeightMultiplier;
+                    pointerRotationAxis = (hit.point - gravityCenter);
+                    satellite = (GameObject)Instantiate(spawnObject, spawnPosition, Quaternion.identity);
+                    SatelliteList.Instance.satellites.Add(satellite);
+                    directionPoint = satellite.GetComponentInChildren<RotateToCenter>().directionPoint;
+
                     satellite.transform.parent = GameObject.Find("SatelliteContainer").transform;
-                    
-                    Vector3 spawnPosition = (hit.point - gravityCenter) * satelliteHeightMultiplier;
-                    
-                    satellite.transform.position = spawnPosition;
+                    satelliteMesh = satellite.transform.GetChild(0);
                     GameInterface.Instance.satelliteCount += 1;
-                    Debug.Log("Spawned a satellite...");
+
+                    isSatellitePlaced = true;
+                    arrowActive = true;
                 }
             }
+        }
+
+        // Display direction arrow on satellite
+        if (arrowActive && satellite)
+        {
+            arrow.SetActive(true);
+            pointerAngle = Input.GetAxis("Mouse X") * 3;
+
+            directionPoint.transform.RotateAround(spawnPosition, pointerRotationAxis, pointerAngle);
+
+            arrow.transform.position = directionPoint.transform.position;
+            
+            arrowDirection = spawnPosition - directionPoint.transform.position;
+            arrow.transform.rotation = Quaternion.LookRotation(spawnPosition - directionPoint.transform.position);
+
+            satellite.GetComponent<SatelliteController>().startingDirection = -arrowDirection;
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                arrowActive = false;
+                
+                satellite.GetComponent<SatelliteController>().launch = true;
+                isSatellitePlaced = false;
+            }
+        }
+        else
+        {
+            arrow.SetActive(false);
         }
     }
 }

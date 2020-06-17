@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class RotateToCenter : MonoBehaviour
 {
-    private void Start()
-    {
-        
-    }
+    public Transform directionPoint;
+    Vector3 earth = new Vector3(0, 0, 0);
 
     void FixedUpdate()
     {
-        transform.LookAt(new Vector3(0, 0, 0));
+        transform.LookAt(earth);
     }
 }
