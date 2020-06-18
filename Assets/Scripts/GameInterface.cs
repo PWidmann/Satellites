@@ -159,8 +159,8 @@ public class GameInterface : MonoBehaviour
         GameManager.TimeScale = 10;
         GameManager.EarthSelfRotationSpeed = 1f;
         GameManager.MoonSelfRotationSpeed = 1f;
-        GameManager.SatelliteStartTravelSpeed = 3f;
-        GameManager.SatelliteStartHeight = 2f;
+        GameManager.SatelliteStartTravelSpeed = 4f;
+        GameManager.SatelliteStartHeight = 1.2f;
 
         // Set Slider Default Values
         earthMassSlider.value = GameManager.EarthMass;
