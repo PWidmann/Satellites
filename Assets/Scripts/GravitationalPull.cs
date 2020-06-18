@@ -18,16 +18,18 @@ public class GravitationalPull : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        // Richtung zur Erde
-        Vector3 direction = (gravityCenterObject.transform.position - transform.position).normalized; // Richtung zur Erde mit Länge 1
+        if (gravityCenterObject)
+        {
+            // Richtung zur Erde
+            Vector3 direction = (gravityCenterObject.transform.position - transform.position).normalized; // Richtung zur Erde mit Länge 1
 
-        //Gravitational Pull (Beschleunigung zum Gravitationscenter)
-        float distance = (gravityCenterObject.transform.position - transform.position).magnitude;
-        float acceleration = (gravitationalConstant * GameManager.EarthMass) / (distance * distance);
-        movement += acceleration * direction * Time.fixedDeltaTime;
+            //Gravitational Pull (Beschleunigung zum Gravitationscenter)
+            float distance = (gravityCenterObject.transform.position - transform.position).magnitude;
+            float acceleration = (gravitationalConstant * GameManager.EarthMass) / (distance * distance);
+            movement += acceleration * direction * Time.fixedDeltaTime;
 
-        //Position anpassen
-        transform.Translate(movement * Time.fixedDeltaTime);
+            //Position anpassen
+            transform.Translate(movement * Time.fixedDeltaTime);
+        }
     }
-
 }

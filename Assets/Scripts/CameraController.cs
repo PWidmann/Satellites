@@ -63,32 +63,35 @@ public class CameraController : MonoBehaviour
     }
     void LateUpdate()
     {
-        //Camera Rotation
-        if (cameraRotationActive)
+        if (target)
         {
-            yaw += Input.GetAxis("Mouse X") * mouseSensitivity;
-            pitch += Input.GetAxis("Mouse Y") * mouseSensitivity * -1;
-            pitch = Mathf.Clamp(pitch, pitchMinMax.x, pitchMinMax.y);
-            targetRotation = new Vector3(pitch, yaw);
-        }
+            //Camera Rotation
+            if (cameraRotationActive)
+            {
+                yaw += Input.GetAxis("Mouse X") * mouseSensitivity;
+                pitch += Input.GetAxis("Mouse Y") * mouseSensitivity * -1;
+                pitch = Mathf.Clamp(pitch, pitchMinMax.x, pitchMinMax.y);
+                targetRotation = new Vector3(pitch, yaw);
+            }
 
-        currentRotation = Vector3.SmoothDamp(currentRotation, targetRotation, ref rotationSmoothVelocity, rotationSmoothTime);
-        transform.eulerAngles = currentRotation;
+            currentRotation = Vector3.SmoothDamp(currentRotation, targetRotation, ref rotationSmoothVelocity, rotationSmoothTime);
+            transform.eulerAngles = currentRotation;
 
-        // Camera Zoom
-        var d = Input.GetAxis("Mouse ScrollWheel");
-        if (d > 0f)
-        {
-            if (targetCameraZoom > minDistanceFromTarget)
-                targetCameraZoom -= cameraZoomRate;
-        }
-        else if (d < 0f)
-        {
-            if (targetCameraZoom < maxDistanceFromTarget)
-                targetCameraZoom += cameraZoomRate;
-        }
+            // Camera Zoom
+            var d = Input.GetAxis("Mouse ScrollWheel");
+            if (d > 0f)
+            {
+                if (targetCameraZoom > minDistanceFromTarget)
+                    targetCameraZoom -= cameraZoomRate;
+            }
+            else if (d < 0f)
+            {
+                if (targetCameraZoom < maxDistanceFromTarget)
+                    targetCameraZoom += cameraZoomRate;
+            }
 
-        transform.position = target.position - transform.forward * currentCameraZoom;
-        currentCameraZoom = Mathf.Lerp(currentCameraZoom, targetCameraZoom, cameraSmoothing);
+            transform.position = target.position - transform.forward * currentCameraZoom;
+            currentCameraZoom = Mathf.Lerp(currentCameraZoom, targetCameraZoom, cameraSmoothing);
+        }
     }
 }

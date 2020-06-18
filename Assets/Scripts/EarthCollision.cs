@@ -21,11 +21,13 @@ public class EarthCollision : MonoBehaviour
 
     void Update()
     {
-        distance = Vector3.Distance(earth.position, transform.position);
+        if(earth)
+            distance = Vector3.Distance(earth.position, transform.position);
 
         if (distance <= radiusEarth && isExploding == false)
         {
             Explode();
+            SoundManager.instance.PlaySound(1);
         }
 
         if (isExploding)

@@ -10,27 +10,31 @@ public class SatelliteCollisionCheck : MonoBehaviour
 
     void Update()
     {
-        checkTimer -= Time.deltaTime;
-
-        if (checkTimer <= 0) // Reduce performance hit with bigger checkTimer
+        if (!GameManager.DestructionSequence)
         {
-            foreach (GameObject satellite in SatelliteList.Instance.satellites)
+            checkTimer -= Time.deltaTime;
+
+            if (checkTimer <= 0) // Reduce performance hit with bigger checkTimer
             {
-                if (satellite != gameObject)
+                foreach (GameObject satellite in SatelliteList.Instance.satellites)
                 {
-                    distance = Vector3.Distance(satellite.transform.position, transform.position);
-
-                    if (distance <= satelliteRadius)
+                    if (satellite != gameObject)
                     {
-                        // Destroy this satellite
-                        SatelliteList.Instance.satellites.Remove(gameObject);
-                        transform.GetComponent<EarthCollision>().Explode();
+                        distance = Vector3.Distance(satellite.transform.position, transform.position);
 
-                        // Destroy colliding satellite
-                        SatelliteList.Instance.satellites.Remove(satellite);
-                        satellite.GetComponent<EarthCollision>().Explode();
+                        if (distance <= satelliteRadius)
+                        {
+                            SoundManager.instance.PlaySound(1);
+                            // Destroy this satellite
+                            SatelliteList.Instance.satellites.Remove(gameObject);
+                            transform.GetComponent<EarthCollision>().Explode();
 
-                        break;
+                            // Destroy colliding satellite
+                            SatelliteList.Instance.satellites.Remove(satellite);
+                            satellite.GetComponent<EarthCollision>().Explode();
+
+                            break;
+                        }
                     }
                 }
             }

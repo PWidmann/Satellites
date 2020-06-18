@@ -8,7 +8,6 @@ public class SatelliteList : MonoBehaviour
 
     public List<GameObject> satellites = new List<GameObject>();
 
-
     private void Start()
     {
         Instance = this;

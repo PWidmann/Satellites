@@ -31,27 +31,28 @@ public class SatelliteController : MonoBehaviour
     }
     void FixedUpdate()
     {
-        
-
-        if (launch)
+        if (!GameInterface.Instance.earthDestructed)
         {
-            // Momentane Erdmasse anpassen
-            gravityCenterMass = GameManager.EarthMass;
+            if (launch)
+            {
+                // Momentane Erdmasse anpassen
+                gravityCenterMass = GameManager.EarthMass;
 
-            // Richtung zur Erde mit Länge 1
-            direction = (gravityCenterLocation - transform.position).normalized;
+                // Richtung zur Erde mit Länge 1
+                direction = (gravityCenterLocation - transform.position).normalized;
 
-            //Gravitational Pull (Beschleunigung zum Gravitationszenter)
-            distance = (gravityCenterLocation - transform.position).magnitude;
-            acceleration = (gravitationalConstant * gravityCenterMass) / (distance * distance);
-            movement += acceleration * direction * Time.fixedDeltaTime;
+                //Gravitational Pull (Beschleunigung zum Gravitationszenter)
+                distance = (gravityCenterLocation - transform.position).magnitude;
+                acceleration = (gravitationalConstant * gravityCenterMass) / (distance * distance);
+                movement += acceleration * direction * Time.fixedDeltaTime;
 
-            //Position anpassen
-            transform.Translate(movement * travelSpeed * Time.fixedDeltaTime);
-        }
-        else
-        {
-            movement = startingDirection.normalized;
+                //Position anpassen
+                transform.Translate(movement * travelSpeed * Time.fixedDeltaTime);
+            }
+            else
+            {
+                movement = startingDirection.normalized;
+            }
         }
     }
 }

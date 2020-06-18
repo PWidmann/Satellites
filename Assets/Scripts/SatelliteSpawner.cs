@@ -6,8 +6,8 @@ public class SatelliteSpawner : MonoBehaviour
 {
     [SerializeField] GameObject spawnObject;
     [SerializeField] GameObject arrowObject;
-    Transform satelliteMesh;
-    public float satelliteHeightMultiplier = 2;
+    //Transform satelliteMesh;
+    
     
     private Vector3 gravityCenter = Vector3.zero;
     RaycastHit hit;
@@ -15,7 +15,7 @@ public class SatelliteSpawner : MonoBehaviour
     Vector3 startingDirection;
 
     bool isSatellitePlaced = false;
-    bool isSetStartingDirection = false;
+    //bool isSetStartingDirection = false;
     bool arrowActive = false;
     float pointerAngle;
     Vector3 pointerRotationAxis;
@@ -26,7 +26,7 @@ public class SatelliteSpawner : MonoBehaviour
     GameObject arrow;
 
     void Start()
-    {     
+    {
         arrow = Instantiate(arrowObject, new Vector3(0, 0, 0), Quaternion.identity);
         arrow.SetActive(false);
     }
@@ -43,15 +43,15 @@ public class SatelliteSpawner : MonoBehaviour
             {
                 if (hit.transform.name == "Earth")
                 {
-                    spawnPosition = (hit.point - gravityCenter) * satelliteHeightMultiplier;
+                    SoundManager.instance.PlaySound(2);
+                    spawnPosition = (hit.point - gravityCenter) * GameManager.SatelliteStartHeight;
                     pointerRotationAxis = (hit.point - gravityCenter);
                     satellite = (GameObject)Instantiate(spawnObject, spawnPosition, Quaternion.identity);
-                    SatelliteList.Instance.satellites.Add(satellite);
+                    
                     directionPoint = satellite.GetComponentInChildren<RotateToCenter>().directionPoint;
 
                     satellite.transform.parent = GameObject.Find("SatelliteContainer").transform;
-                    satelliteMesh = satellite.transform.GetChild(0);
-                    GameInterface.Instance.satelliteCount += 1;
+                    //satelliteMesh = satellite.transform.GetChild(0);
 
                     isSatellitePlaced = true;
                     arrowActive = true;
@@ -76,9 +76,14 @@ public class SatelliteSpawner : MonoBehaviour
 
             if (Input.GetMouseButtonUp(0))
             {
-                arrowActive = false;
-                
+                SoundManager.instance.PlaySound(2);
                 satellite.GetComponent<SatelliteController>().launch = true;
+                satellite.AddComponent<SatelliteCollisionCheck>();
+                SatelliteList.Instance.satellites.Add(satellite);
+                GameInterface.Instance.satelliteCount += 1;
+
+
+                arrowActive = false;
                 isSatellitePlaced = false;
             }
         }
